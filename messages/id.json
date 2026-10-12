@@ -1,0 +1,122 @@
+{
+  "common": {
+    "search": "Cari",
+    "searchPlaceholder": "Cari event, venue, atau kota...",
+    "viewAll": "Lihat Semua",
+    "learnMore": "Pelajari Lebih",
+    "getStarted": "Mulai",
+    "free": "Gratis",
+    "loading": "Memuat...",
+    "noResults": "Tidak ada hasil",
+    "back": "Kembali",
+    "share": "Bagikan",
+    "getTickets": "Dapatkan Tiket",
+    "eventDetails": "Detail Event",
+    "relatedEvents": "Event Terkait",
+    "source": "Sumber"
+  },
+  "nav": {
+    "events": "Events",
+    "venues": "Venue",
+    "about": "Tentang",
+    "findEvents": "Cari Event"
+  },
+  "home": {
+    "heroBadge": "event ditemukan di Indonesia",
+    "heroTitle1": "Temukan Setiap",
+    "heroTitle2": "Event di Indonesia",
+    "heroSubtitle": "Konser, workshop, konferensi, meetup — temukan semuanya di satu tempat. Dari Jakarta sampai Bali, jangan lewatkan yang penting.",
+    "stats": {
+      "eventsListed": "Event Terdaftar",
+      "citiesCovered": "Kota Terjangkau",
+      "venues": "Venue",
+      "monthlyVisitors": "Pengunjung/Bulan"
+    },
+    "featured": {
+      "title": "Event Pilihan",
+      "subtitle": "Event terpilih yang akan segera hadir"
+    },
+    "categories": {
+      "title": "Jelajahi Kategori",
+      "subtitle": "Temukan event yang sesuai minatmu",
+      "allEvents": "Semua Event"
+    },
+    "venueCta": {
+      "title": "Daftarkan Venue Kamu",
+      "subtitle": "Jangkau ribuan penyelenggara event yang mencari tempat sempurna di Indonesia."
+    },
+    "vendorCta": {
+      "title": "Gabung sebagai Vendor",
+      "subtitle": "Katering, fotografer, sound system — hubungkan dengan penyelenggara event yang butuh jasa kamu."
+    }
+  },
+  "events": {
+    "title": "Events",
+    "discover": "Temukan {count}+ event di seluruh Indonesia",
+    "showing": "Menampilkan {shown} dari {total} event",
+    "searchResults": "untuk \"{query}\"",
+    "noEvents": "Event tidak ditemukan",
+    "noEventsDesc": "Coba ubah filter atau kata kunci pencarian",
+    "filters": {
+      "allCategories": "🎯 Semua Event",
+      "allCities": "📍 Semua Kota",
+      "anyDate": "📅 Kapan Saja",
+      "today": "Hari Ini",
+      "thisWeek": "Minggu Ini",
+      "thisMonth": "Bulan Ini",
+      "upcoming": "Akan Datang",
+      "freeOnly": "🎫 Event Gratis Saja"
+    }
+  },
+  "venue": {
+    "title": "Venue",
+    "discover": "Temukan {count}+ venue di Indonesia",
+    "searchPlaceholder": "Cari venue...",
+    "capacity": "Kapasitas",
+    "rating": "Rating",
+    "listVenue": "Daftarkan Venue"
+  },
+  "about": {
+    "title": "Tentang Yukgo",
+    "subtitle": "Platform event terlengkap di Indonesia",
+    "mission": "Misi Kami",
+    "missionText": "Membuat setiap event di Indonesia mudah ditemukan. Menghubungkan penyelenggara event dengan audiens yang tepat.",
+    "features": {
+      "discovery": {
+        "title": "Temukan Event",
+        "desc": "Cari dan temukan event dari seluruh Indonesia dalam satu platform."
+      },
+      "venues": {
+        "title": "Venue Terbaik",
+        "desc": "Jelajahi ribuan venue untuk event kamu berikutnya."
+      },
+      "vendors": {
+        "title": "Vendor Terpercaya",
+        "desc": "Temukan vendor terbaik untuk catering, dekorasi, dan lainnya."
+      }
+    }
+  },
+  "categories": {
+    "tech": "Teknologi",
+    "business": "Bisnis",
+    "arts": "Seni & Budaya",
+    "music": "Musik",
+    "food": "Kuliner",
+    "sports": "Olahraga",
+    "education": "Edukasi",
+    "nightlife": "Nightlife",
+    "community": "Komunitas",
+    "other": "Lainnya"
+  },
+  "footer": {
+    "description": "Temukan setiap event di Indonesia. Konser, workshop, konferensi, meetup — semua di satu tempat.",
+    "explore": "Jelajahi",
+    "categories": "Kategori",
+    "contact": "Kontak",
+    "privacy": "Privasi",
+    "terms": "Syarat & Ketentuan",
+    "allEvents": "Semua Event",
+    "venues": "Venue",
+    "aboutUs": "Tentang Kami"
+  }
+}

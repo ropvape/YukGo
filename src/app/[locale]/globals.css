@@ -1,0 +1,217 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #5B5BF7;
+  --color-brand-dark: #4338CA;
+  --color-brand-light: #818CF8;
+  --color-accent-purple: #7C3AED;
+  --color-accent-cyan: #06B6D4;
+  --color-surface: #F8FAFF;
+}
+
+:root {
+  --color-yukgo-blue: #5B5BF7;
+  --color-yukgo-black: #0A0A0A;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ==============================
+   Modern UI Utilities
+   ============================== */
+
+/* Gradient brand background */
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #5B5BF7 0%, #7C3AED 50%, #06B6D4 100%);
+}
+
+.bg-gradient-brand-subtle {
+  background: linear-gradient(135deg, rgba(91,91,247,0.08) 0%, rgba(124,58,237,0.05) 50%, rgba(6,182,212,0.03) 100%);
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Glow hover effect for cards */
+.card-glow {
+  transition: all 0.3s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 0 1px rgba(91, 91, 247, 0.1), 0 8px 30px rgba(91, 91, 247, 0.12), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #5B5BF7 0%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle grid pattern background */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(91, 91, 247, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 91, 247, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Gradient border wrapper */
+.gradient-border {
+  position: relative;
+  border-radius: 1rem;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(91,91,247,0.3), rgba(124,58,237,0.2), rgba(6,182,212,0.2));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* Navbar gradient bottom border */
+.navbar-gradient-border {
+  position: relative;
+}
+.navbar-gradient-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(91,91,247,0.2), rgba(124,58,237,0.15), rgba(6,182,212,0.15), transparent);
+}
+
+/* Animated floating shapes for hero */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-12px) rotate(3deg); }
+  66% { transform: translateY(6px) rotate(-2deg); }
+}
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(8px) rotate(-3deg); }
+  66% { transform: translateY(-16px) rotate(2deg); }
+}
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+/* Modern pill button with gradient active state */
+.pill-active {
+  background: linear-gradient(135deg, #5B5BF7, #7C3AED);
+  color: white;
+  box-shadow: 0 4px 14px rgba(91, 91, 247, 0.3);
+}
+
+/* Hero mesh gradient */
+.bg-hero-mesh {
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(91,91,247,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(6,182,212,0.06) 0%, transparent 50%),
+    linear-gradient(to bottom right, #F8FAFF, #FFFFFF, #F0F4FF);
+}
+
+/* Stat card gradient backgrounds */
+.stat-card-1 {
+  background: linear-gradient(135deg, rgba(91,91,247,0.06), rgba(124,58,237,0.04));
+}
+.stat-card-2 {
+  background: linear-gradient(135deg, rgba(124,58,237,0.06), rgba(6,182,212,0.04));
+}
+.stat-card-3 {
+  background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(91,91,247,0.04));
+}
+.stat-card-4 {
+  background: linear-gradient(135deg, rgba(91,91,247,0.04), rgba(6,182,212,0.06));
+}
+
+/* ==============================
+   Upcoming Events Table Utilities
+   ============================== */
+
+/* Subtle indigo tint on table row hover */
+.table-row-hover:hover {
+  background-color: rgba(91, 91, 247, 0.04);
+}
+
+/* Sticky week header with light indigo background */
+.week-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Modern section spacing */
+@media (min-width: 768px) {
+  .section-modern {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}

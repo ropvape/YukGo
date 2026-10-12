@@ -1,18 +1,37 @@
 {
-  "name": "yukgo-live-agents",
-  "version": "1.0.0",
-  "description": "Yukgo.live AI Agent Pipeline",
-  "type": "module",
+  "name": "website",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "event-hunter": "node agents/event-hunter.js",
-    "test-crawl": "node agents/event-hunter.js --test",
-    "content-factory": "node agents/content-factory.js",
-    "test-content": "node agents/content-factory.js --test"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
-    "crawlee": "^3.17.0",
-    "playwright": "^1.52.0",
-    "cheerio": "^1.0.0",
-    "openai": "^4.90.0"
-  }
+    "@supabase/supabase-js": "^2.108.0",
+    "jose": "^6.2.3",
+    "lucide-react": "^1.17.0",
+    "next": "^16.2.7",
+    "next-intl": "^4.13.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^20.19.42",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.7",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3"
+  },
+  "description": "This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
 }
