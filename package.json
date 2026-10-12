@@ -1,0 +1,18 @@
+{
+  "name": "yukgo-live-agents",
+  "version": "1.0.0",
+  "description": "Yukgo.live AI Agent Pipeline",
+  "type": "module",
+  "scripts": {
+    "event-hunter": "node agents/event-hunter.js",
+    "test-crawl": "node agents/event-hunter.js --test",
+    "content-factory": "node agents/content-factory.js",
+    "test-content": "node agents/content-factory.js --test"
+  },
+  "dependencies": {
+    "crawlee": "^3.17.0",
+    "playwright": "^1.52.0",
+    "cheerio": "^1.0.0",
+    "openai": "^4.90.0"
+  }
+}

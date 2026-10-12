@@ -1,0 +1,19 @@
+{
+  "run_at": "2026-06-09T10:03:29.970Z",
+  "mode": "test",
+  "generation_method": "template",
+  "model": null,
+  "events_processed": 3,
+  "articles_generated": 2,
+  "social_posts_generated": 9,
+  "tokens_used": 0,
+  "estimated_cost_usd": 0,
+  "files": {
+    "enriched_events": "data/content/events-enriched.json",
+    "articles": [
+      "data/content/articles/weekly-roundup-2026-06-09.json",
+      "data/content/articles/free-events-2026-06-09.json"
+    ],
+    "social_posts": "data/content/social-posts/social-posts-2026-06-09.json"
+  }
+}

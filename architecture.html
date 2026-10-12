@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yukgo.live — AI Agent Architecture</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 1.1rem;
+      margin-bottom: 50px;
+    }
+    
+    /* ── Architecture Grid ── */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .agent-card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .agent-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(255, 215, 0, 0.15);
+    }
+    
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    
+    .agent-card.hunter::before { background: linear-gradient(90deg, #00b894, #00cec9); }
+    .agent-card.factory::before { background: linear-gradient(90deg, #6c5ce7, #a29bfe); }
+    .agent-card.social::before { background: linear-gradient(90deg, #e17055, #fdcb6e); }
+    .agent-card.outreach::before { background: linear-gradient(90deg, #0984e3, #74b9ff); }
+    
+    .agent-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    
+    .agent-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    
+    .agent-subtitle {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    
+    .agent-task {
+      font-size: 0.85rem;
+      color: #aaa;
+      line-height: 1.6;
+    }
+    
+    .agent-schedule {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      color: #FFD700;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-top: 12px;
+    }
+    
+    /* ── Flow Diagram ── */
+    .flow-section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 40px;
+    }
+    
+    .flow-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    
+    .flow-node {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      min-width: 140px;
+      position: relative;
+    }
+    
+    .flow-node.source {
+      border-color: #00b894;
+    }
+    
+    .flow-node.process {
+      border-color: #6c5ce7;
+    }
+    
+    .flow-node.output {
+      border-color: #FFD700;
+    }
+    
+    .flow-node-icon {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+    
+    .flow-node-label {
+      font-size: 0.8rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .flow-node-detail {
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 4px;
+    }
+    
+    .flow-arrow {
+      color: #555;
+      font-size: 1.5rem;
+      margin: 0 8px;
+    }
+    
+    /* ── Data Sources Table ── */
+    .sources-section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .sources-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    
+    .source-tier {
+      margin-bottom: 24px;
+    }
+    
+    .tier-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .tier-1 .tier-label { background: rgba(0, 184, 148, 0.2); color: #00b894; }
+    .tier-2 .tier-label { background: rgba(108, 92, 231, 0.2); color: #a29bfe; }
+    .tier-3 .tier-label { background: rgba(225, 112, 85, 0.2); color: #e17055; }
+    
+    .source-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      margin-bottom: 6px;
+      transition: background 0.2s;
+    }
+    
+    .source-row:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    
+    .source-name {
+      font-weight: 600;
+      color: #fff;
+      width: 160px;
+    }
+    
+    .source-type {
+      font-size: 0.8rem;
+      color: #888;
+      width: 120px;
+    }
+    
+    .source-events {
+      font-size: 0.8rem;
+      color: #aaa;
+      flex: 1;
+    }
+    
+    .source-status {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    
+    .status-ready { background: rgba(0,184,148,0.2); color: #00b894; }
+    .status-wip { background: rgba(255,215,0,0.2); color: #FFD700; }
+    .status-planned { background: rgba(136,136,136,0.2); color: #888; }
+    
+    /* ── Tech Stack ── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    
+    .tech-card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .tech-card-title {
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .tech-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD700;
+    }
+    
+    .tech-name {
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    
+    .tech-desc {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    
+    /* ── Stats Dashboard ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 4px;
+    }
+    
+    /* ── Workflow ── */
+    .workflow {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    
+    .workflow-card {
+      flex: 1;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .workflow-time {
+      font-size: 0.75rem;
+      color: #FFD700;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .workflow-title {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .workflow-step {
+      font-size: 0.85rem;
+      color: #aaa;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .workflow-step:last-child { border: none; }
+    
+    .workflow-duration {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 12px;
+    }
+    
+    /* ── Revenue Model ── */
+    .revenue-section {
+      background: linear-gradient(145deg, #1a1a2e, #16213e);
+      border: 1px solid #FFD700;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .revenue-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .revenue-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .revenue-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .revenue-label {
+      width: 180px;
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    
+    .revenue-bar-track {
+      flex: 1;
+      height: 28px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .revenue-bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #000;
+      transition: width 1s ease;
+    }
+    
+    .bar-featured { background: linear-gradient(90deg, #FFD700, #FFA500); width: 40%; }
+    .bar-subscription { background: linear-gradient(90deg, #00b894, #00cec9); width: 55%; }
+    .bar-ticketing { background: linear-gradient(90deg, #6c5ce7, #a29bfe); width: 70%; }
+    .bar-ads { background: linear-gradient(90deg, #e17055, #fdcb6e); width: 85%; }
+    .bar-booking { background: linear-gradient(90deg, #FFD700, #FF6348); width: 100%; }
+    
+    .revenue-amount {
+      width: 120px;
+      text-align: right;
+      font-size: 0.85rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    
+    /* ── Cost Section ── */
+    .cost-section {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .cost-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    
+    .cost-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .cost-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .cost-card-title {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .cost-item:last-child { border: none; }
+    
+    .cost-item-name {
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+    
+    .cost-item-price {
+      font-size: 0.85rem;
+      color: #FFD700;
+      font-weight: 600;
+    }
+    
+    .cost-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 12px;
+      margin-top: 8px;
+      border-top: 2px solid #333;
+    }
+    
+    .cost-total-label {
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    .cost-total-price {
+      font-weight: 800;
+      color: #FFD700;
+      font-size: 1.1rem;
+    }
+    
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 40px 0 20px;
+      color: #444;
+      font-size: 0.85rem;
+    }
+    
+    .footer a {
+      color: #FFD700;
+      text-decoration: none;
+    }
+    
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .arch-grid { grid-template-columns: 1fr 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .workflow { flex-direction: column; }
+      .cost-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- HEADER -->
+  <h1>🎯 YUKGO.LIVE</h1>
+  <p class="subtitle">AI Agent Architecture — One Person, Four Agents, Infinite Events</p>
+  
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">4</div>
+      <div class="stat-label">AI Agents</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">10+</div>
+      <div class="stat-label">Data Sources</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">26</div>
+      <div class="stat-label">Events Today ✓</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">~2jt</div>
+      <div class="stat-label">Monthly Cost</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">1hr</div>
+      <div class="stat-label">Your Daily Time</div>
+    </div>
+  </div>
+  
+  <!-- 4 AGENTS -->
+  <div class="arch-grid">
+    <div class="agent-card hunter">
+      <div class="agent-icon">🔍</div>
+      <div class="agent-name">Event Hunter</div>
+      <div class="agent-subtitle">Agent 1 — Data Collector</div>
+      <div class="agent-task">
+        Crawl events dari Eventbrite, Loket, 10times, Tiketapasaja. 
+        Extract data pakai AI. Deduplicate & enrich.
+      </div>
+      <div class="agent-schedule">⏱ Setiap 6 jam</div>
+    </div>
+    
+    <div class="agent-card factory">
+      <div class="agent-icon">✍️</div>
+      <div class="agent-name">Content Factory</div>
+      <div class="agent-subtitle">Agent 2 — Writer</div>
+      <div class="agent-task">
+        Generate artikel SEO, event descriptions, weekly roundups. 
+        Bahasa Indonesia engaging & informatif.
+      </div>
+      <div class="agent-schedule">⏱ Setiap 12 jam</div>
+    </div>
+    
+    <div class="agent-card social">
+      <div class="agent-icon">📱</div>
+      <div class="agent-name">Social Manager</div>
+      <div class="agent-subtitle">Agent 3 — Publisher</div>
+      <div class="agent-task">
+        Auto-post ke Instagram, TikTok, Twitter. 
+        Schedule optimal, track engagement.
+      </div>
+      <div class="agent-schedule">⏱ 3x sehari</div>
+    </div>
+    
+    <div class="agent-card outreach">
+      <div class="agent-icon">🤝</div>
+      <div class="agent-name">Outreach Bot</div>
+      <div class="agent-subtitle">Agent 4 — Sales</div>
+      <div class="agent-task">
+        Cari venue & vendor baru. Draft email outreach personal. 
+        Queue untuk approval Anda.
+      </div>
+      <div class="agent-schedule">⏱ 1x sehari (weekday)</div>
+    </div>
+  </div>
+  
+  <!-- DATA FLOW -->
+  <div class="flow-section">
+    <div class="flow-title">📡 Data Flow — Dari Sumber Sampai Publish</div>
+    <div class="flow-diagram">
+      <div class="flow-node source">
+        <div class="flow-node-icon">🌐</div>
+        <div class="flow-node-label">Data Sources</div>
+        <div class="flow-node-detail">Eventbrite, Loket, 10times...</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node process">
+        <div class="flow-node-icon">🤖</div>
+        <div class="flow-node-label">AI Extract</div>
+        <div class="flow-node-detail">GPT-4o-mini</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node process">
+        <div class="flow-node-icon">🔄</div>
+        <div class="flow-node-label">Deduplicate</div>
+        <div class="flow-node-detail">Fuzzy match</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node process">
+        <div class="flow-node-icon">✍️</div>
+        <div class="flow-node-label">Content Gen</div>
+        <div class="flow-node-detail">AI Writer</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node output">
+        <div class="flow-node-icon">✅</div>
+        <div class="flow-node-label">Your Review</div>
+        <div class="flow-node-detail">Approve / Edit</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node output">
+        <div class="flow-node-icon">🚀</div>
+        <div class="flow-node-label">Publish</div>
+        <div class="flow-node-detail">yukgo.live + Social</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- DATA SOURCES -->
+  <div class="sources-section">
+    <div class="sources-title">📊 Event Data Sources</div>
+    
+    <div class="source-tier tier-1">
+      <div class="tier-label">Tier 1 — API (Paling Mudah)</div>
+      <div class="source-row">
+        <div class="source-name">Eventbrite</div>
+        <div class="source-type">REST API</div>
+        <div class="source-events">Concerts, workshops, conferences</div>
+        <div class="source-status status-ready">✓ LIVE</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">Tiket.com</div>
+        <div class="source-type">Affiliate API</div>
+        <div class="source-events">Attractions, experiences, events</div>
+        <div class="source-status status-wip">⏳ Pending</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">Ticketmaster</div>
+        <div class="source-type">Discovery API</div>
+        <div class="source-events">Concerts, sports, entertainment</div>
+        <div class="source-status status-planned">Planned</div>
+      </div>
+    </div>
+    
+    <div class="source-tier tier-2">
+      <div class="tier-label">Tier 2 — Web Scraping</div>
+      <div class="source-row">
+        <div class="source-name">Loket.com</div>
+        <div class="source-type">Playwright</div>
+        <div class="source-events">Concerts, festivals, fairs</div>
+        <div class="source-status status-planned">Planned</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">10times.com</div>
+        <div class="source-type">Cheerio/HTTP</div>
+        <div class="source-events">B2B, trade shows, conferences</div>
+        <div class="source-status status-wip">⏳ 403 Fix</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">Tiketapasaja</div>
+        <div class="source-type">Cheerio/HTTP</div>
+        <div class="source-events">Local events, secondary cities</div>
+        <div class="source-status status-wip">⏳ Parser</div>
+      </div>
+    </div>
+    
+    <div class="source-tier tier-3">
+      <div class="tier-label">Tier 3 — Discovery</div>
+      <div class="source-row">
+        <div class="source-name">Google Events</div>
+        <div class="source-type">SerpApi</div>
+        <div class="source-events">Aggregator across all platforms</div>
+        <div class="source-status status-planned">Planned</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">Facebook Events</div>
+        <div class="source-type">Apify</div>
+        <div class="source-events">Community events, local gatherings</div>
+        <div class="source-status status-planned">Planned</div>
+      </div>
+      <div class="source-row">
+        <div class="source-name">Schema.org</div>
+        <div class="source-type">Generic Crawler</div>
+        <div class="source-events">Any site with Event markup</div>
+        <div class="source-status status-planned">Planned</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- TECH STACK -->
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tech-card-title">Frontend</div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Next.js 15</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Tailwind CSS</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Vercel</div></div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-card-title">Backend & Database</div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Supabase (PostgreSQL)</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Upstash (Redis + QStash)</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Next.js API Routes</div></div>
+    </div>
+    <div class="tech-card">
+      <div class="tech-card-title">AI & Scraping</div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">OpenAI GPT-4o-mini</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Crawlee + Playwright</div></div>
+      <div class="tech-item"><div class="tech-dot"></div><div class="tech-name">Cheerio</div></div>
+    </div>
+  </div>
+  
+  <!-- DAILY WORKFLOW -->
+  <div class="workflow">
+    <div class="workflow-card">
+      <div class="workflow-time">☀️ PAGI — 30 menit</div>
+      <div class="workflow-title">Review & Approve</div>
+      <div class="workflow-step">1. Buka yukgo.live/admin</div>
+      <div class="workflow-step">2. Review event baru dari Agent 1</div>
+      <div class="workflow-step">3. Approve / edit artikel dari Agent 2</div>
+      <div class="workflow-step">4. Cek social media metrics</div>
+      <div class="workflow-duration">⏱ 30 menit</div>
+    </div>
+    <div class="workflow-card">
+      <div class="workflow-time">🌤 SIANG — 15 menit</div>
+      <div class="workflow-title">Outreach Review</div>
+      <div class="workflow-step">1. Review outreach queue (Agent 4)</div>
+      <div class="workflow-step">2. Approve email yang akan dikirim</div>
+      <div class="workflow-step">3. Reply venue/vendor responses</div>
+      <div class="workflow-duration">⏱ 15 menit</div>
+    </div>
+    <div class="workflow-card">
+      <div class="workflow-time">🌆 SORE — 15 menit</div>
+      <div class="workflow-title">Strategy & Add</div>
+      <div class="workflow-step">1. Check trending events / news</div>
+      <div class="workflow-step">2. Tambahkan event manual</div>
+      <div class="workflow-step">3. Review weekly analytics</div>
+      <div class="workflow-duration">⏱ 15 menit</div>
+    </div>
+  </div>
+  
+  <!-- REVENUE MODEL -->
+  <div class="revenue-section">
+    <div class="revenue-title">💰 Revenue Streams — Progresif dari Mudah ke Besar</div>
+    <div class="revenue-bars">
+      <div class="revenue-item">
+        <div class="revenue-label">Featured Listing</div>
+        <div class="revenue-bar-track">
+          <div class="revenue-bar-fill bar-featured">Mudah</div>
+        </div>
+        <div class="revenue-amount">Rp 500rb-5jt/bln</div>
+      </div>
+      <div class="revenue-item">
+        <div class="revenue-label">Venue Subscription</div>
+        <div class="revenue-bar-track">
+          <div class="revenue-bar-fill bar-subscription">Medium</div>
+        </div>
+        <div class="revenue-amount">Rp 1-10jt/bln</div>
+      </div>
+      <div class="revenue-item">
+        <div class="revenue-label">Ticketing Commission</div>
+        <div class="revenue-bar-track">
+          <div class="revenue-bar-fill bar-ticketing">Scale</div>
+        </div>
+        <div class="revenue-amount">Rp 10-50jt/bln</div>
+      </div>
+      <div class="revenue-item">
+        <div class="revenue-label">Advertising</div>
+        <div class="revenue-bar-track">
+          <div class="revenue-bar-fill bar-ads">Traffic-Based</div>
+        </div>
+        <div class="revenue-amount">Rp 20-100jt/bln</div>
+      </div>
+      <div class="revenue-item">
+        <div class="revenue-label">Full Booking Platform</div>
+        <div class="revenue-bar-track">
+          <div class="revenue-bar-fill bar-booking">Big Play 🚀</div>
+        </div>
+        <div class="revenue-amount">Rp 100jt+/bln</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- COST -->
+  <div class="cost-section">
+    <div class="cost-title">💸 Monthly Operating Cost</div>
+    <div class="cost-grid">
+      <div class="cost-card">
+        <div class="cost-card-title">BUILD PHASE (Bulan 1-2)</div>
+        <div class="cost-item">
+          <span class="cost-item-name">Domain yukgo.live</span>
+          <span class="cost-item-price">Rp 150rb/thn</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">Vercel (free tier)</span>
+          <span class="cost-item-price">Rp 0</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">Supabase (free tier)</span>
+          <span class="cost-item-price">Rp 0</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">OpenAI API (testing)</span>
+          <span class="cost-item-price">Rp 200rb</span>
+        </div>
+        <div class="cost-total">
+          <span class="cost-total-label">Total</span>
+          <span class="cost-total-price">~Rp 350rb</span>
+        </div>
+      </div>
+      <div class="cost-card">
+        <div class="cost-card-title">RUNNING PHASE (Bulan 3+)</div>
+        <div class="cost-item">
+          <span class="cost-item-name">Vercel Pro</span>
+          <span class="cost-item-price">Rp 350rb/bln</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">Supabase Pro</span>
+          <span class="cost-item-price">Rp 400rb/bln</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">OpenAI GPT-4o-mini</span>
+          <span class="cost-item-price">Rp 300rb/bln</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">Upstash QStash</span>
+          <span class="cost-item-price">Rp 150rb/bln</span>
+        </div>
+        <div class="cost-item">
+          <span class="cost-item-name">SerpApi (optional)</span>
+          <span class="cost-item-price">Rp 800rb/bln</span>
+        </div>
+        <div class="cost-total">
+          <span class="cost-total-label">Total</span>
+          <span class="cost-total-price">~Rp 2-2.5jt/bln</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    Yukgo.live — Born in Indonesia 🇮🇩 — Built with AI Agents<br>
+    Architecture v1.0 — Juni 2026
+  </div>
+  
+</div>
+
+</body>
+</html>

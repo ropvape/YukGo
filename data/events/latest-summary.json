@@ -1,0 +1,50 @@
+{
+  "lastRun": "2026-06-14T06:46:26.975Z",
+  "totalEvents": 163,
+  "newEvents": 164,
+  "bySource": {
+    "eventbrite": 46,
+    "loket": 45,
+    "goers": 72
+  },
+  "byCity": {
+    "Jakarta": 56,
+    "Kab. Samosir": 1,
+    "Jakarta Utara": 4,
+    "Jakarta Timur": 1,
+    "Kota Surakarta": 1,
+    "KAB MALANG": 1,
+    "Jakarta Selatan": 4,
+    "Kab. Serang": 1,
+    "Kota Surabaya": 3,
+    "DKI Jakarta": 5,
+    "Online": 2,
+    "Jakarta Pusat": 2,
+    "Kuala Lumpur": 1,
+    "Kota Yogyakarta": 2,
+    "Kab. Tapanuli Utara": 1,
+    "Kab. Garut": 1,
+    "Bandung": 20,
+    "Surabaya": 11,
+    "Kab. Bandung": 2,
+    "Bali": 31,
+    "Kota Denpasar": 2,
+    "Kab. Badung": 1,
+    "Kab. Sleman": 2,
+    "Jakarta Barat": 1,
+    "Kab. Bantul": 1,
+    "Yogyakarta": 6
+  },
+  "byCategory": {
+    "other": 77,
+    "tech": 28,
+    "arts": 18,
+    "fashion": 2,
+    "music": 18,
+    "business": 11,
+    "education": 4,
+    "community": 1,
+    "food": 1,
+    "nightlife": 3
+  }
+}
