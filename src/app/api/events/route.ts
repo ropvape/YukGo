@@ -67,6 +67,8 @@ export async function GET() {
     const { data, error } = await supabase
       .from('events')
       .select('*')
+      .not('title', 'in', '("Unknown","unknown","N/A","")')
+      .not('date', 'in', '("Unknown","unknown","N/A","")')
       .order('created_at', { ascending: false });
 
     if (error) {
