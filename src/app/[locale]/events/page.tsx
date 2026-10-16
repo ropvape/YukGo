@@ -1,12 +1,13 @@
 'use client';
 
-import { Suspense, useState, useMemo, useCallback } from 'react';
+import { Suspense, useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
 import FilterBar from '@/components/FilterBar';
 import EventCard from '@/components/EventCard';
 import Pagination from '@/components/Pagination';
-import { sampleEvents, searchEvents } from '@/data/events';
+import { fetchEvents } from '@/data/events';
+import { Event } from '@/lib/types';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -15,6 +16,8 @@ function EventsContent() {
   const initialQuery = searchParams.get('q') || '';
   const initialCategory = searchParams.get('category') || 'all';
 
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(initialQuery);
   const [category, setCategory] = useState(initialCategory);
   const [city, setCity] = useState('all');
@@ -22,8 +25,24 @@ function EventsContent() {
   const [showFree, setShowFree] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    fetchEvents().then((data) => {
+      setAllEvents(data);
+      setLoading(false);
+    });
+  }, []);
+
   const filteredEvents = useMemo(() => {
-    let events = query ? searchEvents(query) : [...sampleEvents];
+    let events = [...allEvents];
+
+    if (query) {
+      const q = query.toLowerCase();
+      events = events.filter(e =>
+        e.title.toLowerCase().includes(q) ||
+        e.city.toLowerCase().includes(q) ||
+        e.category.toLowerCase().includes(q)
+      );
+    }
 
     if (category !== 'all') {
       events = events.filter(e => e.category === category);
@@ -63,10 +82,9 @@ function EventsContent() {
       });
     }
 
-    events.sort((a: any, b: any) => a.date.localeCompare(b.date));
-
+    events.sort((a, b) => a.date.localeCompare(b.date));
     return events;
-  }, [query, category, city, dateRange, showFree]);
+  }, [allEvents, query, category, city, dateRange, showFree]);
 
   const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
   const paginatedEvents = filteredEvents.slice(
@@ -81,25 +99,19 @@ function EventsContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Events</h1>
           <p className="text-gray-500">
-            Discover {sampleEvents.length}+ events across Indonesia
+            Discover {allEvents.length}+ events across Indonesia
           </p>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search & Filters */}
         <div className="mb-6 space-y-4">
           <div className="max-w-xl">
-            <SearchBar
-              placeholder="Search events..."
-              onSearch={handleSearch}
-              defaultValue={initialQuery}
-            />
+            <SearchBar placeholder="Search events..." onSearch={handleSearch} defaultValue={initialQuery} />
           </div>
           <FilterBar
             selectedCategory={category}
@@ -113,16 +125,19 @@ function EventsContent() {
           />
         </div>
 
-        {/* Results count */}
         <div className="mb-6 text-sm text-gray-500">
           Showing {paginatedEvents.length} of {filteredEvents.length} events
           {query && <span className="font-medium"> for &ldquo;{query}&rdquo;</span>}
         </div>
 
-        {/* Events Grid */}
-        {paginatedEvents.length > 0 ? (
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500">Loading events...</p>
+          </div>
+        ) : paginatedEvents.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {paginatedEvents.map((event: any) => (
+            {paginatedEvents.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
@@ -134,14 +149,9 @@ function EventsContent() {
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-10">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
           </div>
         )}
       </div>
