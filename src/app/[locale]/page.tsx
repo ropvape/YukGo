@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from '@/i18n/routing';
 import { ArrowRight, Calendar, MapPin, Building2, Users } from 'lucide-react';
 import SearchBar from '@/components/SearchBar';
 import EventCard from '@/components/EventCard';
 import UpcomingEventsTable from '@/components/UpcomingEventsTable';
-import { sampleEvents, getFeaturedEvents } from '@/data/events';
-import { CATEGORIES } from '@/lib/types';
+import { fetchEvents } from '@/data/events';
+import { CATEGORIES, Event } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
@@ -16,12 +16,21 @@ export default function HomePage() {
   const t = useTranslations('home');
   const tc = useTranslations('categories');
   const tcommon = useTranslations('common');
-  const featuredEvents = getFeaturedEvents().slice(0, 6);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  useEffect(() => {
+    fetchEvents().then((data) => {
+      setEvents(data);
+      setLoading(false);
+    });
+  }, []);
+
+  const featuredEvents = events.slice(0, 6);
   const filteredEvents = selectedCategory === 'all'
-    ? sampleEvents.slice(0, 12)
-    : sampleEvents.filter(e => e.category === selectedCategory).slice(0, 12);
+    ? events.slice(0, 12)
+    : events.filter(e => e.category === selectedCategory).slice(0, 12);
 
   const handleSearch = (query: string) => {
     if (query.trim()) {
@@ -30,7 +39,7 @@ export default function HomePage() {
   };
 
   const stats = [
-    { label: t('stats.eventsListed'), value: sampleEvents.length + '+', icon: Calendar },
+    { label: t('stats.eventsListed'), value: events.length + '+', icon: Calendar },
     { label: t('stats.citiesCovered'), value: '8+', icon: MapPin },
     { label: t('stats.venues'), value: '50+', icon: Building2 },
     { label: t('stats.monthlyVisitors'), value: '10K+', icon: Users },
@@ -43,12 +52,10 @@ export default function HomePage() {
     <div>
       {/* Hero Section */}
       <section className="relative bg-hero-mesh overflow-hidden">
-        {/* Floating decorative shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-20 -right-20 w-96 h-96 bg-[#5B5BF7] rounded-full opacity-[0.07] blur-3xl animate-float" />
           <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-[#7C3AED] rounded-full opacity-[0.06] blur-3xl animate-float-delayed" />
           <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-[#06B6D4] rounded-full opacity-[0.05] blur-3xl animate-float-slow" />
-          {/* Subtle geometric shapes */}
           <div className="absolute top-20 left-[15%] w-16 h-16 border-2 border-[#5B5BF7]/10 rounded-xl rotate-12 animate-float" />
           <div className="absolute bottom-32 right-[10%] w-12 h-12 border-2 border-[#7C3AED]/10 rounded-full animate-float-delayed" />
           <div className="absolute top-1/2 left-[8%] w-8 h-8 bg-[#06B6D4]/10 rounded-lg rotate-45 animate-float-slow" />
@@ -58,7 +65,7 @@ export default function HomePage() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-5 py-2 bg-white/80 backdrop-blur-sm border border-[#5B5BF7]/15 rounded-full text-sm font-medium mb-8 shadow-sm">
               <span className="animate-pulse">🔥</span>
-              <span className="text-gray-700">{sampleEvents.length} {t('heroBadge')}</span>
+              <span className="text-gray-700">{events.length} {t('heroBadge')}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-gray-900 leading-[1.1] mb-6 tracking-tight">
